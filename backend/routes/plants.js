@@ -1,12 +1,8 @@
-// web framework, needed for the Router
 const express = require('express');
-// the database connection
 const db = require('./../db');
 
-// a mini app that only handles the routes defined in this file
 const router = express.Router();
 
-// GET /api/plants - return all plants
 router.get('/', (req, res) => {
     const userId = Number(req.query.userId);
 
