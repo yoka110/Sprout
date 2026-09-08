@@ -3,6 +3,14 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 
+// central setup of the app: everything listed here is available in every component
 export const appConfig: ApplicationConfig = {
-  providers: [provideBrowserGlobalErrorListeners(), provideRouter(routes), provideHttpClient()],
+  providers: [
+    // logs errors that nobody catches, added by the generator
+    provideBrowserGlobalErrorListeners(),
+    // turns on routing and hands over our route table from app.routes.ts
+    provideRouter(routes),
+    // turns on HttpClient, needed by every service that calls the backend
+    provideHttpClient(),
+  ],
 };
