@@ -1,0 +1,28 @@
+/* header bar at the top of every page */
+header {
+  background-color: #2e7d32;
+  color: white;
+  padding: 1rem;
+}
+
+header h1 {
+  margin: 0 0 0.5rem 0;
+}
+
+/* navigation links in a row */
+nav a {
+  color: white;
+  margin-right: 1rem;
+  text-decoration: none;
+}
+
+/* the link of the page we are currently on */
+nav a.active {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* content area below the header */
+main {
+  padding: 1rem;
+}
