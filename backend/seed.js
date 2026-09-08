@@ -88,11 +88,20 @@ db.exec(`
   );
 `);
 
-// insert one example plant with its stages and problems
+// the five example plants, all of them guides (owner_id is NULL)
+// IMPORTANT: this order fixes the ids 1 to 5, companion_rules point to them.
+// Never insert a plant in between, always add new ones at the end.
 db.exec(`
     INSERT INTO plants (id, name, family, difficulty, location, spacing_cm, height_cm, owner_id)
-    VALUES (1, 'Tomate', 'Nachtschattengewaechse', 'Mittel', 'Sonne', 60, 180, NULL);
+    VALUES (1, 'Tomate', 'Nachtschattengewaechse', 'Mittel', 'Sonne', 60, 180, NULL),
+           (2, 'Moehre', 'Doldenbluetler', 'Mittel', 'Sonne', 5, 40, NULL),
+           (3, 'Zwiebel', 'Lauchgewaechse', 'Einfach', 'Sonne', 15, 40, NULL),
+           (4, 'Salat', 'Korbbluetler', 'Einfach', 'Halbschatten', 25, 30, NULL),
+           (5, 'Buschbohne', 'Huelsenfruechtler', 'Einfach', 'Sonne', 15, 50, NULL);
+`);
 
+// stages and problems of plant 1: Tomate
+db.exec(`
     INSERT INTO growth_stages (plant_id, position, title, period, instruction)
     VALUES (1, 1, 'Aussaat', 'Maerz bis April',
             'Samen 1 cm tief in Anzuchterde saeen und hell bei 20 bis 24 Grad aufstellen.'),
@@ -107,5 +116,66 @@ db.exec(`
     VALUES (1, 'Braunfaeule', 'Pflanzen ueberdachen, Blaetter trocken halten, befallene Teile entfernen.'),
            (1, 'Bluetenendfaeule', 'Gleichmaessig giessen und Kalkmangel im Boden ausgleichen.');
 `);
+
+// stages and problems of plant 2: Moehre
+db.exec(`
+    INSERT INTO growth_stages (plant_id, position, title, period, instruction)
+    VALUES (2, 1, 'Aussaat', 'April bis Juni',
+            'Samen 1 cm tief in Reihen saeen, der Boden muss fein und steinfrei sein.'),
+           (2, 2, 'Vereinzeln', 'Mai bis Juni', 'Sind die Pflanzen 5 cm hoch, auf 5 cm Abstand vereinzeln.'),
+           (2, 3, 'Pflege', 'Juni bis Juli',
+            'Boden locker und gleichmaessig feucht halten, sonst platzen die Wurzeln.'),
+           (2, 4, 'Anhaeufeln', 'Juli', 'Erde ueber die Wurzelkoepfe ziehen, sonst werden sie gruen und bitter.'),
+           (2, 5, 'Ernte', 'Juli bis Oktober', 'Wurzeln vorsichtig herausziehen, am besten nach einem Regentag.');
+
+    INSERT INTO plant_problems (plant_id, name, countermeasure)
+    VALUES (2, 'Moehrenfliege', 'Kulturschutznetz auflegen und Zwiebeln danebensetzen.');
+`);
+
+// stages and problems of plant 3: Zwiebel
+db.exec(`
+    INSERT INTO growth_stages (plant_id, position, title, period, instruction)
+    VALUES (3, 1, 'Stecken', 'Maerz bis April',
+            'Steckzwiebeln 15 cm auseinander so setzen, dass die Spitze herausschaut.'),
+           (3, 2, 'Anwachsen', 'April', 'Boden locker und unkrautfrei halten, nur wenig giessen.'),
+           (3, 3, 'Pflege', 'Mai bis Juni', 'Nur bei Trockenheit giessen, Staunaesse laesst die Zwiebeln faulen.'),
+           (3, 4, 'Abreifen', 'Juli', 'Sobald das Laub umknickt, das Giessen einstellen.'),
+           (3, 5, 'Ernte', 'Juli bis August', 'Zwiebeln an einem trockenen Tag herausziehen und nachtrocknen lassen.');
+
+    INSERT INTO plant_problems (plant_id, name, countermeasure)
+    VALUES (3, 'Zwiebelfliege', 'Kulturschutznetz auflegen und den Anbauplatz jedes Jahr wechseln.');
+`);
+
+// stages and problems of plant 4: Salat
+db.exec(`
+    INSERT INTO growth_stages (plant_id, position, title, period, instruction)
+    VALUES (4, 1, 'Aussaat', 'Maerz bis August', 'Samen nur duenn mit Erde bedecken, sie brauchen Licht zum Keimen.'),
+           (4, 2, 'Pikieren', 'April bis August', 'Kraeftige Keimlinge einzeln in kleine Toepfe umsetzen.'),
+           (4, 3, 'Auspflanzen', 'April bis September',
+            'Mit 25 cm Abstand setzen, der Wurzelhals muss ueber der Erde bleiben.'),
+           (4, 4, 'Pflege', 'Mai bis September', 'Morgens giessen und den Boden zwischen den Pflanzen locker halten.'),
+           (4, 5, 'Ernte', 'Mai bis Oktober', 'Ganze Koepfe frueh am Morgen schneiden, dann sind die Blaetter knackig.');
+
+    INSERT INTO plant_problems (plant_id, name, countermeasure)
+    VALUES (4, 'Schnecken', 'Abends absammeln und einen Schneckenzaun um das Beet setzen.'),
+           (4, 'Falscher Mehltau', 'Weiter auseinander pflanzen und nie ueber die Blaetter giessen.');
+`);
+
+// stages and problems of plant 5: Buschbohne
+db.exec(`
+    INSERT INTO growth_stages (plant_id, position, title, period, instruction)
+    VALUES (5, 1, 'Aussaat', 'Mai bis Juni', 'Samen 3 cm tief direkt ins Beet legen, der Boden muss warm sein.'),
+           (5, 2, 'Auflaufen', 'Juni', 'Nach etwa zehn Tagen zeigen sich die Keimblaetter, Boden feucht halten.'),
+           (5, 3, 'Anhaeufeln', 'Juni', 'Erde an die Stiele haeufeln, das gibt den Pflanzen Halt.'),
+           (5, 4, 'Pflege', 'Juni bis Juli',
+            'Regelmaessig giessen, aber nicht duengen, Bohnen versorgen sich selbst mit Stickstoff.'),
+           (5, 5, 'Ernte', 'Juli bis September', 'Huelsen ernten, solange sie zart sind und beim Brechen knacken.');
+
+    INSERT INTO plant_problems (plant_id, name, countermeasure)
+    VALUES (5, 'Schwarze Bohnenlaus', 'Befallene Triebspitzen abknipsen und Marienkaefer im Beet dulden.');
+`);
+
+// companion rules are written by AP-C and inserted here later.
+// Each pair is stored only once (F-07), the query checks both directions.
 
 console.log('Database seeded.');
