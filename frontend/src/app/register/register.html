@@ -1,1 +1,27 @@
 <h2>Registrieren</h2>
+
+<!-- [formGroup] connects this form to the registerForm object in the class -->
+<!-- (ngSubmit) calls onSubmit() and stops the page from reloading -->
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <!-- for and id belong together: clicking the label focuses the field -->
+  <label for="username">Benutzername</label>
+  <!-- formControlName links this input to the control of the same name -->
+  <input id="username" type="text" formControlName="username">
+
+  <label for="password">Passwort</label>
+  <!-- type password shows dots instead of the typed text -->
+  <input id="password" type="password" formControlName="password">
+
+  <label for="confirmPassword">Passwort wiederholen</label>
+  <input id="confirmPassword" type="password" formControlName="confirmPassword">
+
+  <!-- only shown while errorMessage is not empty -->
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+
+  <button type="submit">Konto anlegen</button>
+</form>
+
+<!-- routerLink switches the page without reloading the whole app -->
+<p>Schon ein Konto? <a routerLink="/login">Anmelden</a></p>
