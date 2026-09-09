@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,19 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {}
+export class App {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  // name of the logged in user, or null if nobody is logged in
+  username(): string | null {
+    const user = this.authService.getCurrentUser();
+    return user ? user.username : null;
+  }
+
+  // forget the user and leave the page, it may be a protected one
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+}
