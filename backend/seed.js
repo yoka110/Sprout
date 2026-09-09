@@ -175,7 +175,21 @@ db.exec(`
     VALUES (5, 'Schwarze Bohnenlaus', 'Befallene Triebspitzen abknipsen und Marienkaefer im Beet dulden.');
 `);
 
-// companion rules are written by AP-C and inserted here later.
 // Each pair is stored only once (F-07), the query checks both directions.
+// companion_rules: all ten possible pairs of the five example plants,
+// ids are fixed by F-24: 1 Tomate, 2 Moehre, 3 Zwiebel, 4 Salat, 5 Buschbohne
+db.exec(`
+    INSERT INTO companion_rules (plant_a_id, plant_b_id, type, reason)
+    VALUES (1, 2, 'good', 'Moehren bleiben niedrig und nutzen den Boden unter den Tomatenwurzeln, beide teilen sich das Beet ohne Konkurrenz.'),
+           (1, 3, 'good', 'Der Geruch der Zwiebel vertreibt an Tomaten typische Schaedlinge wie die Weisse Fliege.'),
+           (1, 4, 'good', 'Salat waechst im Schatten der Tomaten und haelt den Boden bedeckt und feucht.'),
+           (1, 5, 'bad', 'Beide sind Starkzehrer und konkurrieren um Naehrstoffe; das dichte Bohnenlaub haelt die Tomatenblaetter feucht und beguenstigt Braunfaeule.'),
+           (2, 3, 'good', 'Der Geruch der Zwiebeln vertreibt die Moehrenfliege, der Geruch der Moehren die Zwiebelfliege.'),
+           (2, 4, 'good', 'Salat wird frueh geerntet und gibt den langsameren Moehren Platz und Schatten, solange sie noch klein sind.'),
+           (2, 5, 'good', 'Bohnen reichern den Boden mit Stickstoff an, den die Moehren beim Wachsen aufnehmen.'),
+           (3, 4, 'good', 'Salat wurzelt flach und bedeckt den Boden, waehrend die Zwiebel tiefer und schmaler waechst - beide konkurrieren kaum um denselben Raum.'),
+           (3, 5, 'bad', 'Zwiebeln geben Stoffe ab, die den Knoellchenbakterien an den Bohnenwurzeln schaden; die Bohnen bleiben klein und wachsen schlecht.'),
+           (4, 5, 'good', 'Bohnen reichern den Boden mit Stickstoff an, den der schnellwuechsige Salat braucht.');
+`);
 
 console.log('Database seeded.');
