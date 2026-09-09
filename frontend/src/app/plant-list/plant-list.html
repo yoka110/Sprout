@@ -1,1 +1,25 @@
-<h2>Pflanzen</h2>
+<h2>Pflanzen-Guides</h2>
+
+@if (isLoading) {
+    <p>Lädt...</p>
+}
+
+@if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+}
+
+@if (!isLoading && !errorMessage && plants.length === 0) {
+    <p>Es sind keine Pflanzen vorhanden.</p>
+}
+
+<div class="card-grid">
+    @for (plant of plants; track plant.id) {
+        <a class="card" [routerLink]="['/plants', plant.id]">
+            <h3>{{ plant.name }}</h3>
+            <p class="family">{{ plant.family }}</p>
+            <p>Schwierigkeit: {{ plant.difficulty }}</p>
+            <p>Standort: {{ plant.location }}</p>
+            <p>Pflanzabstand: {{ plant.spacing_cm }} cm</p>
+        </a>
+    }
+</div>
