@@ -155,5 +155,22 @@ router.get('/:id', (req, res) => {
     });
 });
 
+// DELETE /api/beds/:id/plants/:bedPlantId - remove a plant from a bed
+router.delete('/:id/plants/:bedPlantId', (req, res) => {
+    const { bedPlantId } = req.params;
+
+    // .run() on a DELETE doesn't return the deleted row, only metadata
+    const result = db.prepare('DELETE FROM bed_plants WHERE id = ?').run(bedPlantId);
+
+    // changes is how many rows were actually affected - 0 means the id
+    // didn't exist, nothing to delete
+    if (result.changes === 0) {
+        return res.status(404).json({ error: 'Eintrag existiert nicht' });
+    }
+
+    // 204: successful, nothing to send back
+    res.status(204).send();
+});
+
 // hand the router over to server.js
 module.exports = router;
