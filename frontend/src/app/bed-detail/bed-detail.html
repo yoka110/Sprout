@@ -1,1 +1,20 @@
-<h2>Beet</h2>
+@if (bed) {
+  <h2>{{ bed.name }}</h2>
+  <p>{{ bed.rows }} Reihen, {{ bed.row_length_cm }} cm lang, {{ bed.location }}</p>
+
+  <h3>Belegung</h3>
+  @for (plant of bed.plants; track plant.bed_plant_id) {
+    <p>Reihe {{ plant.row_index }}: {{ plant.name }} (Abstand {{ plant.spacing_cm }} cm, Höhe {{ plant.height_cm }} cm)</p>
+  } @empty {
+    <p>Noch keine Pflanzen in diesem Beet.</p>
+  }
+
+  <h3>Mischkultur-Warnungen</h3>
+  @for (warning of bed.warnings; track $index) {
+    <p>{{ warning.plant_a }} + {{ warning.plant_b }} ({{ warning.type }}): {{ warning.reason }}</p>
+  } @empty {
+    <p>Keine Warnungen für dieses Beet.</p>
+  }
+} @else {
+  <p>Lädt...</p>
+}
