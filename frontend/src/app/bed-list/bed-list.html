@@ -1,1 +1,10 @@
 <h2>Beete</h2>
+
+@for (bed of beds; track bed.id) {
+  <p>
+    <a [routerLink]="['/beds', bed.id]">{{ bed.name }}</a>
+    — {{ bed.rows }} Reihen, {{ bed.location }}
+  </p>
+} @empty {
+  <p>Noch keine Beete angelegt.</p>
+}
