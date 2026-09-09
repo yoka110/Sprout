@@ -93,7 +93,67 @@ router.post('/:id/plants', (req, res) => {
     res.status(201).json({ bed_plant_id: result.lastInsertRowid });
 });
 
+// GET /api/beds/:id - one bed with its plants and companion warnings
+router.get('/:id', (req, res) => {
+    const bedId = req.params.id;
 
+    const bed = db.prepare('SELECT * FROM beds WHERE id = ?').get(bedId);
+    if (!bed) {
+        return res.status(404).json({ error: 'Beet existiert nicht' });
+    }
+
+    // all plants currently placed in this bed, joined with plant details
+    const plants = db.prepare(`
+        SELECT bed_plants.id AS bed_plant_id, bed_plants.row_index, plants.id AS plant_id,
+               plants.name, plants.spacing_cm, plants.height_cm
+        FROM bed_plants
+        JOIN plants ON plants.id = bed_plants.plant_id
+        WHERE bed_plants.bed_id = ?
+        ORDER BY bed_plants.row_index
+    `).all(bedId);
+
+    // distinct plant ids in this bed - the same plant could sit in two rows
+    const uniquePlantIds = [...new Set(plants.map(p => p.plant_id))];
+
+    const warnings = [];
+
+    // check every possible pair among the distinct plants (F-09: the
+    // whole bed counts, row position is irrelevant)
+    for (let i = 0; i < uniquePlantIds.length; i++) {
+        for (let j = i + 1; j < uniquePlantIds.length; j++) {
+            const a = uniquePlantIds[i];
+            const b = uniquePlantIds[j];
+
+            // F-07: a pair is stored only once, so check both directions
+            const rule = db.prepare(`
+                SELECT * FROM companion_rules
+                WHERE (plant_a_id = ? AND plant_b_id = ?)
+                   OR (plant_a_id = ? AND plant_b_id = ?)
+            `).get(a, b, b, a);
+
+            if (rule) {
+                const plantA = plants.find(p => p.plant_id === rule.plant_a_id);
+                const plantB = plants.find(p => p.plant_id === rule.plant_b_id);
+                warnings.push({
+                    plant_a: plantA.name,
+                    plant_b: plantB.name,
+                    type: rule.type,
+                    reason: rule.reason
+                });
+            }
+        }
+    }
+
+    res.json({
+        id: bed.id,
+        name: bed.name,
+        rows: bed.rows,
+        row_length_cm: bed.row_length_cm,
+        location: bed.location,
+        plants,
+        warnings
+    });
+});
 
 // hand the router over to server.js
 module.exports = router;
