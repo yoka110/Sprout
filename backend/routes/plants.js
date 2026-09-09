@@ -7,11 +7,11 @@ router.get('/', (req, res) => {
     const userId = Number(req.query.userId);
 
     if(!userId) {
-        const guides = db.prepare('SELECT * FROM plants where owner_id IS NULL').all();
+        const guides = db.prepare('SELECT * FROM plants where owner_id IS NULL ODER BY name').all();
         return res.json(guides);
     }
 
-    const plants = db.prepare('SELECT * FROM plants WHERE owner_id IS NULL OR owner_id = ?').all(userId);
+    const plants = db.prepare('SELECT * FROM plants WHERE owner_id IS NULL OR owner_id = ? ORDER BY name').all(userId);
     res.json(plants);
 });
 
@@ -46,20 +46,25 @@ router.post('/', (req, res) => {
         return res.status(400).json({ error: 'Wuchshöhe muss eine positive Zahl sein' });
     }
 
-    const result = db
-    .prepare('INSERT INTO plants (name, family, difficulty, location, spacing_cm, height_cm, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)')
-    .run(name, family, difficulty, location, spacing_cm, height_cm, owner_id);
+    try{
+        const result = db
+        .prepare('INSERT INTO plants (name, family, difficulty, location, spacing_cm, height_cm, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)')
+        .run(name, family, difficulty, location, spacing_cm, height_cm, owner_id);
 
-    res.status(201).json({
-        id: result.lastInsertRowid,
-        name: name,
-        family: family,
-        difficulty: difficulty,
-        location: location,
-        spacing_cm: spacing_cm,
-        height_cm: height_cm,
-        owner_id: owner_id
-    });
+        res.status(201).json({
+            id: result.lastInsertRowid,
+            name: name,
+            family: family,
+            difficulty: difficulty,
+            location: location,
+            spacing_cm: spacing_cm,
+            height_cm: height_cm,
+            owner_id: owner_id
+        });
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Pflanze konnte nicht angelegt werden' });
+    }
 });
 
 module.exports = router;
