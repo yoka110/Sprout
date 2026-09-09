@@ -172,5 +172,22 @@ router.delete('/:id/plants/:bedPlantId', (req, res) => {
     res.status(204).send();
 });
 
+// DELETE /api/beds/:id - delete a bed and everything planted in it
+router.delete('/:id', (req, res) => {
+    const bedId = req.params.id;
+
+    const bed = db.prepare('SELECT * FROM beds WHERE id = ?').get(bedId);
+    if (!bed) {
+        return res.status(404).json({ error: 'Beet existiert nicht' });
+    }
+
+    // bed_plants rows reference this bed via a foreign key - they have
+    // to go first, otherwise SQLite blocks deleting the bed itself
+    db.prepare('DELETE FROM bed_plants WHERE bed_id = ?').run(bedId);
+    db.prepare('DELETE FROM beds WHERE id = ?').run(bedId);
+
+    res.status(204).send();
+});
+
 // hand the router over to server.js
 module.exports = router;
