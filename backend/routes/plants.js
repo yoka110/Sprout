@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
     const userId = Number(req.query.userId);
 
     if(!userId) {
-        const guides = db.prepare('SELECT * FROM plants where owner_id IS NULL ODER BY name').all();
+        const guides = db.prepare('SELECT * FROM plants where owner_id IS NULL ORDER BY name').all();
         return res.json(guides);
     }
 
