@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
 
 import { Home } from './home/home';
 import { Login } from './login/login';
@@ -11,23 +12,18 @@ import { BedDetail } from './bed-detail/bed-detail';
 import { NotFound } from './not-found/not-found';
 
 export const routes: Routes = [
-  // start page
   { path: '', component: Home },
 
-  // user accounts (AP-A)
   { path: 'login', component: Login },
   { path: 'register', component: Register },
 
-  // plants (AP-B)
   { path: 'plants', component: PlantList },
   // 'new' must come before ':id', otherwise ':id' would match 'new'
-  { path: 'plants/new', component: PlantForm },
+  { path: 'plants/new', component: PlantForm, canActivate: [authGuard] },
   { path: 'plants/:id', component: PlantDetail },
 
-  // beds (AP-C)
-  { path: 'beds', component: BedList },
-  { path: 'beds/:id', component: BedDetail },
+  { path: 'beds', component: BedList, canActivate: [authGuard] },
+  { path: 'beds/:id', component: BedDetail, canActivate: [authGuard] },
 
-  // any unknown path
   { path: '**', component: NotFound },
 ];

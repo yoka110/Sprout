@@ -5,8 +5,14 @@
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Start</a>
     <a routerLink="/plants" routerLinkActive="active">Pflanzen</a>
     <a routerLink="/beds" routerLinkActive="active">Beete</a>
-    <a routerLink="/login" routerLinkActive="active">Anmelden</a>
-    <a routerLink="/register" routerLinkActive="active">Registrieren</a>
+
+    @if (username()) {
+      <span>Angemeldet als {{ username() }}</span>
+      <button (click)="logout()">Abmelden</button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Anmelden</a>
+      <a routerLink="/register" routerLinkActive="active">Registrieren</a>
+    }
   </nav>
 </header>
 
