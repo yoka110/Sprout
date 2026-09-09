@@ -24,5 +24,33 @@ router.get('/', (req, res) => {
     res.json(beds);
 });
 
+// POST /api/beds - create a new bed
+router.post('/', (req, res) => {
+    // pull the five expected fields out of the JSON request body
+    const { user_id, name, rows, row_length_cm, location } = req.body;
+
+    // all five are required fields
+    if (!user_id || !name || !rows || !row_length_cm || !location) {
+        return res.status(400).json({ error: 'Pflichtfeld fehlt' });
+    }
+
+    // F-08: a bed has between 1 and 6 rows
+    if (rows < 1 || rows > 6) {
+        return res.status(400).json({ error: 'rows muss zwischen 1 und 6 liegen' });
+    }
+
+    // insert the new row; .run() executes the statement and returns
+    // metadata about it, not the row itself
+    const result = db.prepare(
+        'INSERT INTO beds (user_id, name, rows, row_length_cm, location) VALUES (?, ?, ?, ?, ?)'
+    ).run(user_id, name, rows, row_length_cm, location);
+
+    // fetch the just-created row so the response includes the new id;
+    // .get() returns a single object instead of an array
+    const bed = db.prepare('SELECT * FROM beds WHERE id = ?').get(result.lastInsertRowid);
+
+    res.status(201).json(bed);
+});
+
 // hand the router over to server.js
 module.exports = router;
