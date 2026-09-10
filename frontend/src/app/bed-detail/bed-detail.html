@@ -48,5 +48,9 @@
     <p>Keine besonders guten Nachbarschaften in diesem Beet.</p>
   }
 } @else {
-  <p>Lädt...</p>
+  @if (loadError) {
+    <p class="error">{{ loadError }}</p>
+  } @else {
+    <p>Lädt...</p>
+  }
 }

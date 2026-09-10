@@ -1,5 +1,9 @@
 <h2>Beete</h2>
 
+@if (loadError) {
+  <p class="error">{{ loadError }}</p>
+}
+
 @for (bed of beds; track bed.id) {
   <p>
     <a [routerLink]="['/beds', bed.id]">{{ bed.name }}</a>

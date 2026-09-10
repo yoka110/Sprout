@@ -17,10 +17,11 @@ export class BedList implements OnInit {
 
   beds: Bed[] = [];
 
+  // text shown if loading the list itself fails (404, server down)
+  loadError = '';
   // text shown when creating a bed goes wrong, empty means no error
   errorMessage = '';
 
-  // the form for creating a new bed
   createBedForm = new FormGroup({
     name: new FormControl('', Validators.required),
     rows: new FormControl('', [Validators.required, Validators.min(1), Validators.max(6)]),
@@ -32,14 +33,26 @@ export class BedList implements OnInit {
     const user = this.authService.getCurrentUser();
 
     if (user) {
-      this.bedService.getBeds(user.id).subscribe((beds) => {
-        this.beds = beds;
-        this.changeDetector.detectChanges();
+      this.bedService.getBeds(user.id).subscribe({
+        // the request succeeded
+        next: (beds) => {
+          this.beds = beds;
+          this.loadError = '';
+          this.changeDetector.detectChanges();
+        },
+        // the server refused it, or is not reachable at all
+        error: (response) => {
+          if (response.error && response.error.error) {
+            this.loadError = response.error.error;
+          } else {
+            this.loadError = 'Server nicht erreichbar';
+          }
+          this.changeDetector.detectChanges();
+        },
       });
     }
   }
 
-  // runs when the user submits the create-bed form
   onSubmit() {
     if (this.createBedForm.invalid) {
       this.errorMessage = 'Bitte alle Felder korrekt ausfüllen (Reihen: 1 bis 6)';
@@ -60,14 +73,12 @@ export class BedList implements OnInit {
     };
 
     this.bedService.createBed(newBed).subscribe({
-      // the backend accepted and created the bed
       next: (bed) => {
         this.beds.push(bed);
         this.createBedForm.reset();
         this.errorMessage = '';
         this.changeDetector.detectChanges();
       },
-      // the backend refused it (e.g. rows outside 1-6), or the server is not running
       error: (response) => {
         if (response.error && response.error.error) {
           this.errorMessage = response.error.error;

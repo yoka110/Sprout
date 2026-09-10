@@ -14,15 +14,14 @@ export class BedDetail implements OnInit {
   private bedService = inject(BedService);
   private changeDetector = inject(ChangeDetectorRef);
 
-  // the bed shown here, null until the first request comes back
   bed: BedWithPlants | null = null;
-  // the :id from the route, read once and reused for assign/remove
   private bedId = 0;
 
+  // text shown if the bed itself fails to load (404, server down)
+  loadError = '';
   // text shown when assigning a plant goes wrong, empty means no error
   errorMessage = '';
 
-  // temporary fixed list until plant.service (AP-B) exists (F-24 IDs 1-5)
   availablePlants = [
     { id: 1, name: 'Tomate' },
     { id: 2, name: 'Moehre' },
@@ -31,7 +30,6 @@ export class BedDetail implements OnInit {
     { id: 5, name: 'Buschbohne' },
   ];
 
-  // the form for assigning a plant to a row
   assignPlantForm = new FormGroup({
     plant_id: new FormControl('', Validators.required),
     row_index: new FormControl('', [Validators.required, Validators.min(1)]),
@@ -43,16 +41,26 @@ export class BedDetail implements OnInit {
     this.loadBed();
   }
 
-  // (re)loads the bed; used on init and again after every assign/remove,
-  // because assigning or removing a plant changes the warnings too
   private loadBed() {
-    this.bedService.getBed(this.bedId).subscribe((bed) => {
-      this.bed = bed;
-      this.changeDetector.detectChanges();
+    this.bedService.getBed(this.bedId).subscribe({
+      // the request succeeded
+      next: (bed) => {
+        this.bed = bed;
+        this.loadError = '';
+        this.changeDetector.detectChanges();
+      },
+      // the server refused it (e.g. 404), or is not reachable at all
+      error: (response) => {
+        if (response.error && response.error.error) {
+          this.loadError = response.error.error;
+        } else {
+          this.loadError = 'Server nicht erreichbar';
+        }
+        this.changeDetector.detectChanges();
+      },
     });
   }
 
-  // runs when the user submits the assign-plant form
   onAssignPlant() {
     if (this.assignPlantForm.invalid) {
       this.errorMessage = 'Bitte Pflanze und Reihe auswählen';
@@ -65,13 +73,11 @@ export class BedDetail implements OnInit {
     };
 
     this.bedService.assignPlant(this.bedId, newBedPlant).subscribe({
-      // the backend accepted it: clear the form and reload to get fresh warnings
       next: () => {
         this.assignPlantForm.reset();
         this.errorMessage = '';
         this.loadBed();
       },
-      // the backend refused it (e.g. row already occupied), or the server is not running
       error: (response) => {
         if (response.error && response.error.error) {
           this.errorMessage = response.error.error;
@@ -83,7 +89,6 @@ export class BedDetail implements OnInit {
     });
   }
 
-  // runs when the user clicks "Entfernen" next to a plant
   onRemovePlant(bedPlantId: number) {
     this.bedService.removePlant(this.bedId, bedPlantId).subscribe({
       next: () => this.loadBed(),
@@ -94,7 +99,6 @@ export class BedDetail implements OnInit {
     });
   }
 
-  // how many plants of this kind roughly fit in one row (F-10)
   plantCount(rowLengthCm: number, spacingCm: number): number {
     return Math.floor(rowLengthCm / spacingCm);
   }
