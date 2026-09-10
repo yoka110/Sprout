@@ -13,6 +13,15 @@ export interface Bed {
   location: string;
 }
 
+// data needed to create a new bed, sent to POST /api/beds
+export interface NewBed {
+  user_id: number;
+  name: string;
+  rows: number;
+  row_length_cm: number;
+  location: string;
+}
+
 // one plant placed in a bed, part of the detail view
 export interface BedPlant {
   bed_plant_id: number;
@@ -61,5 +70,10 @@ export class BedService {
   // get one bed with its plants and companion warnings
   getBed(id: number) {
     return this.http.get<BedWithPlants>(this.apiUrl + '/' + id);
+  }
+
+  // create a new bed
+  createBed(bed: NewBed) {
+    return this.http.post<Bed>(this.apiUrl, bed);
   }
 }
