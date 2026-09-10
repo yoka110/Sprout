@@ -10,7 +10,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     // turns on routing and hands over our route table from app.routes.ts
     provideRouter(routes),
-    // turns on HttpClient, needed by every service that calls the backend
+    // turns on HttpClient
     provideHttpClient(),
   ],
 };
