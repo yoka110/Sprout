@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Plant, PlantService } from '../plant.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-plant-list',
@@ -10,6 +11,7 @@ import { Plant, PlantService } from '../plant.service';
 })
 export class PlantList implements OnInit {
   private plantService = inject(PlantService);
+  private authService = inject(AuthService)
   private changeDetector = inject(ChangeDetectorRef);
 
   plants: Plant[] = [];
@@ -17,7 +19,8 @@ export class PlantList implements OnInit {
   isLoading = true;
 
   ngOnInit(): void {
-    this.plantService.getPlants().subscribe({
+    const currentUser = this.authService.getCurrentUser();
+    this.plantService.getPlants(currentUser?.id).subscribe({
       next: (plants) => {
         this.plants = plants;
         this.isLoading = false;

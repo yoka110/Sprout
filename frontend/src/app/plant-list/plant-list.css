@@ -38,3 +38,12 @@
 .error {
   color: #a4342b;
 }
+
+.new-plant {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #6a9455;
+  color: #ffffff;
+  text-decoration: none;
+}

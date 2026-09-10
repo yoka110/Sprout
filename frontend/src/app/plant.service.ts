@@ -33,6 +33,29 @@ export interface PlantWithDetail extends Plant {
     problems: PlantProblem[];
 }
 
+export interface NewStage {
+  title: string;
+  period: string;
+  instruction: string;
+}
+
+export interface NewProblem {
+  name: string;
+  countermeasure: string;
+}
+
+export interface NewPlant {
+    name: string;
+    family: string;
+    difficulty: string;
+    location: string;
+    spacing_cm: number;
+    height_cm: number;
+    owner_id: number;
+    stages: NewStage[];
+    problems: NewProblem[];
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -43,12 +66,16 @@ export class PlantService {
 
     getPlants(userId?: number) {
         if (userId) {
-            return this.http.get<Plant[]>(`${this.apiUrl}?uswerId=${userId}`);
+            return this.http.get<Plant[]>(`${this.apiUrl}?userId=${userId}`);
         }
         return this.http.get<Plant[]>(this.apiUrl);
     }
 
     getPlant(id: number) {
         return this.http.get<PlantWithDetail>(`${this.apiUrl}/${id}`)
+    }
+
+    createPlant(plant: NewPlant) {
+        return this.http.post<Plant>(this.apiUrl, plant)
     }
 }
