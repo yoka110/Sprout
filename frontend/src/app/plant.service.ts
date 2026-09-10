@@ -28,7 +28,7 @@ export interface PlantProblem {
   countermeasure: string;
 }
 
-export interface PlantDetail extends Plant {
+export interface PlantWithDetail extends Plant {
     stages: GrowthStage[];
     problems: PlantProblem[];
 }
@@ -49,6 +49,6 @@ export class PlantService {
     }
 
     getPlant(id: number) {
-        return this.http.get<PlantDetail>(`${this.apiUrl}/${id}`)
+        return this.http.get<PlantWithDetail>(`${this.apiUrl}/${id}`)
     }
 }
