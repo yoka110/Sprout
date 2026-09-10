@@ -1,1 +1,36 @@
 <h2>Beete</h2>
+
+@if (loadError) {
+  <p class="error">{{ loadError }}</p>
+}
+
+@for (bed of beds; track bed.id) {
+  <p>
+    <a [routerLink]="['/beds', bed.id]">{{ bed.name }}</a>
+    — {{ bed.rows }} Reihen, {{ bed.location }}
+  </p>
+} @empty {
+  <p>Noch keine Beete angelegt.</p>
+}
+
+<h3>Neues Beet anlegen</h3>
+
+<form [formGroup]="createBedForm" (ngSubmit)="onSubmit()">
+  <label for="name">Name</label>
+  <input id="name" type="text" formControlName="name">
+
+  <label for="rows">Reihen (1–6)</label>
+  <input id="rows" type="number" formControlName="rows">
+
+  <label for="row_length_cm">Reihenlänge (cm)</label>
+  <input id="row_length_cm" type="number" formControlName="row_length_cm">
+
+  <label for="location">Standort</label>
+  <input id="location" type="text" formControlName="location">
+
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+
+  <button type="submit">Beet anlegen</button>
+</form>
