@@ -4,16 +4,27 @@
 
   <h3>Belegung</h3>
   @for (plant of bed.plants; track plant.bed_plant_id) {
-    <p>Reihe {{ plant.row_index }}: {{ plant.name }} (Abstand {{ plant.spacing_cm }} cm, Höhe {{ plant.height_cm }} cm)</p>
+    <p>
+      Reihe {{ plant.row_index }}: {{ plant.name }}
+      (Abstand {{ plant.spacing_cm }} cm, Höhe {{ plant.height_cm }} cm,
+      etwa {{ plantCount(bed.row_length_cm, plant.spacing_cm) }} Pflanzen)
+    </p>
   } @empty {
     <p>Noch keine Pflanzen in diesem Beet.</p>
   }
 
-  <h3>Mischkultur-Warnungen</h3>
-  @for (warning of bed.warnings; track $index) {
-    <p>{{ warning.plant_a }} + {{ warning.plant_b }} ({{ warning.type }}): {{ warning.reason }}</p>
+  <h3>Passt nicht zusammen</h3>
+  @for (warning of badWarnings; track $index) {
+    <p>{{ warning.plant_a }} + {{ warning.plant_b }}: {{ warning.reason }}</p>
   } @empty {
-    <p>Keine Warnungen für dieses Beet.</p>
+    <p>Keine schlechten Nachbarschaften in diesem Beet.</p>
+  }
+
+  <h3>Gute Nachbarn</h3>
+  @for (warning of goodWarnings; track $index) {
+    <p>{{ warning.plant_a }} + {{ warning.plant_b }}: {{ warning.reason }}</p>
+  } @empty {
+    <p>Keine besonders guten Nachbarschaften in diesem Beet.</p>
   }
 } @else {
   <p>Lädt...</p>

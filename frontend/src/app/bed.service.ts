@@ -32,9 +32,9 @@ export interface CompanionWarning {
 }
 
 // a single bed together with its full occupancy and warnings
-export interface BedDetail {
+// (no user_id here: GET /api/beds/:id does not return it)
+export interface BedWithPlants {
   id: number;
-  user_id: number;
   name: string;
   rows: number;
   row_length_cm: number;
@@ -60,6 +60,6 @@ export class BedService {
 
   // get one bed with its plants and companion warnings
   getBed(id: number) {
-    return this.http.get<BedDetail>(this.apiUrl + '/' + id);
+    return this.http.get<BedWithPlants>(this.apiUrl + '/' + id);
   }
 }
