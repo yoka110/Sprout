@@ -8,10 +8,31 @@
       Reihe {{ plant.row_index }}: {{ plant.name }}
       (Abstand {{ plant.spacing_cm }} cm, Höhe {{ plant.height_cm }} cm,
       etwa {{ plantCount(bed.row_length_cm, plant.spacing_cm) }} Pflanzen)
+      <button type="button" (click)="onRemovePlant(plant.bed_plant_id)">Entfernen</button>
     </p>
   } @empty {
     <p>Noch keine Pflanzen in diesem Beet.</p>
   }
+
+  <h3>Pflanze zuordnen</h3>
+  <form [formGroup]="assignPlantForm" (ngSubmit)="onAssignPlant()">
+    <label for="plant_id">Pflanze</label>
+    <select id="plant_id" formControlName="plant_id">
+      <option value="">-- wählen --</option>
+      @for (plant of availablePlants; track plant.id) {
+        <option [value]="plant.id">{{ plant.name }}</option>
+      }
+    </select>
+
+    <label for="row_index">Reihe (1–{{ bed.rows }})</label>
+    <input id="row_index" type="number" formControlName="row_index">
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <button type="submit">Zuordnen</button>
+  </form>
 
   <h3>Passt nicht zusammen</h3>
   @for (warning of badWarnings; track $index) {

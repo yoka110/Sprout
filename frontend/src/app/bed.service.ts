@@ -32,6 +32,12 @@ export interface BedPlant {
   height_cm: number;
 }
 
+// data needed to assign a plant to a row, sent to POST /api/beds/:id/plants
+export interface NewBedPlant {
+  plant_id: number;
+  row_index: number;
+}
+
 // one companion-planting warning, part of the detail view
 export interface CompanionWarning {
   plant_a: string;
@@ -75,5 +81,15 @@ export class BedService {
   // create a new bed
   createBed(bed: NewBed) {
     return this.http.post<Bed>(this.apiUrl, bed);
+  }
+
+  // assign a plant to a row in a bed
+  assignPlant(bedId: number, plant: NewBedPlant) {
+    return this.http.post<{ bed_plant_id: number }>(this.apiUrl + '/' + bedId + '/plants', plant);
+  }
+
+  // remove a plant from a bed
+  removePlant(bedId: number, bedPlantId: number) {
+    return this.http.delete<void>(this.apiUrl + '/' + bedId + '/plants/' + bedPlantId);
   }
 }
