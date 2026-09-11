@@ -1,0 +1,5 @@
+/* intro paragraph uses the same secondary text color as elsewhere in the app (e.g. .hint in plant-form, .family in plant-detail) - not the main body color, so it reads as supporting text under the heading */
+p {
+  color: #5f6b58;
+  max-width: 600px;
+}

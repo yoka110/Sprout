@@ -1,14 +1,3 @@
-input,
-select,
-textarea {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 6px;
-  border: 1px solid #c8d6c0;
-  border-radius: 4px;
-  font-family: inherit;
-}
-
 /* centers the form block itself, the text inside stays left aligned */
 form {
   max-width: 420px;
@@ -19,40 +8,6 @@ form {
 h2 {
   max-width: 420px;
   margin: 0 auto 16px auto;
-}
-
-label {
-  display: block;
-  margin-bottom: 4px;
-  font-weight: bold;
-}
-
-button {
-  padding: 8px 16px;
-  margin-right: 12px;
-  border: none;
-  border-radius: 4px;
-  background-color: #6a9455;
-  color: #ffffff;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #b7c4b0;
-  cursor: not-allowed;
-}
-
-button.secondary {
-  margin-bottom: 8px;
-  background-color: #ffffff;
-  border: 1px solid #6a9455;
-  color: #3f5a33;
-}
-
-button.secondary:disabled {
-  border-color: #b7c4b0;
-  color: #8a968a;
-  background-color: #ffffff;
 }
 
 /* one stage or problem block */
@@ -80,7 +35,7 @@ button.secondary:disabled {
   color: #5f6b58;
 }
 
-.block button.secondary {
+.block button.btn-secondary {
   margin: 12px 0 0 0;
   font-size: 14px;
 }
@@ -98,5 +53,4 @@ button.secondary:disabled {
   display: block;
   margin-top: 4px;
   font-size: 14px;
-  color: #a4342b;
 }

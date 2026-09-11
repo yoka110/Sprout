@@ -1,8 +1,139 @@
-/* basic styles for the whole app */
+/* Sprout - global styles, apply to every page */
+/* Angular scopes component CSS to that one component (adds a generated attribute selector) -
+   styles.css is the only file without that scoping and therefore the only place shared rules belong. */
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: white;
+  /* modern system fonts first, Arial as fallback - no web fonts loaded, everything here is already installed on Windows/macOS */
+  font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #F5F5F5;
   color: #222222;
+  /* default line spacing is too tight (~1.15) for body text, 1.6 gives paragraphs room to breathe */
+  line-height: 1.6;
+}
+
+/* headings get a serif font, normal weight instead of the browser default bold - editorial look, agreed as the "Organic" anleihe */
+/* font-size added for a consistent scale: h1 largest (used once, in the header "Sprout"), h2 for page titles, h3 for section titles */
+h1,
+h2,
+h3 {
+  font-family: Georgia, serif;
+  font-weight: normal;
+  margin: 0 0 24px 0;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 28px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+/* plain links without a more specific class (e.g. bed names in bed-list, "Registrieren"/"Anmelden") -
+   browser default is a harsh blue; this keeps the underline (link must stay recognisable without relying on color alone) but uses our own green */
+a {
+  color: #6a9455;
+}
+
+/* shared error message, used on every page (login, register, plant pages, bed pages) */
+.error {
+  color: #a4342b;
+}
+
+/* primary action button, e.g. submit, "add plant/bed" */
+/* border-radius: capsule shape, inspired by the TypeUI reference */
+/* transition + box-shadow on hover: gives the button a small lift instead of a flat color swap */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-right: 12px;
+  border: none;
+  border-radius: 20px;
+  background-color: #6a9455;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s, box-shadow 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn:focus {
+  outline: 2px solid #3f5a33;
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  background-color: #b7c4b0;
+  cursor: not-allowed;
+  opacity: 1;
+  box-shadow: none;
+}
+
+/* secondary button, e.g. "remove stage", "cancel" */
+.btn-secondary {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+  border: 2px solid #6a9455;
+  border-radius: 20px;
+  background-color: #ffffff;
+  color: #3f5a33;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s, box-shadow 0.15s;
+}
+
+.btn-secondary:hover {
+  opacity: 0.85;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary:focus {
+  outline: 2px solid #3f5a33;
+  outline-offset: 2px;
+}
+
+.btn-secondary:disabled {
+  border-color: #b7c4b0;
+  color: #8a968a;
+  background-color: #ffffff;
+  opacity: 1;
+  box-shadow: none;
+}
+
+/* form labels, used on every page with a form (login, register, plant-form, bed-list, bed-detail) */
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+/* form fields, used on login, register, plant-form and both bed forms */
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #c8d6c0;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #6a9455;
+  outline-offset: 1px;
 }
