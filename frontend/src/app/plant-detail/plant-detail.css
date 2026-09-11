@@ -1,0 +1,44 @@
+.family {
+  margin-top: 0;
+  font-style: italic;
+  color: #5f6b58;
+}
+
+.facts {
+  list-style: none;
+  padding: 0;
+  max-width: 400px;
+}
+
+.facts li {
+  padding: 6px 0;
+  border-bottom: 1px solid #e2e8de;
+}
+
+.stages li {
+  margin-bottom: 16px;
+  padding-left: 10px;
+  border-left: 3px solid #6a9455;
+}
+
+.stages h4 {
+  margin: 0 0 2px 0;
+}
+
+.stages .period {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #5f6b58;
+}
+
+.stages p {
+  margin: 0;
+}
+
+.problems li {
+  margin-bottom: 8px;
+}
+
+.error {
+  color: #a4342b;
+}

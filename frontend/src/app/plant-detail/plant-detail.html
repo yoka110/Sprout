@@ -1,1 +1,43 @@
-<h2>Pflanze</h2>
+<p><a routerLink="/plants">Zurück zur Übersicht</a></p>
+
+@if (isLoading) {
+  <p>Lädt…</p>
+}
+
+@if (errorMessage) {
+  <p class="error">{{ errorMessage }}</p>
+}
+
+@if (plant; as p) {
+  <h2>{{ p.name }}</h2>
+  <p class="family">{{ p.family }}</p>
+
+  <h3>Steckbrief</h3>
+  <ul class="facts">
+    <li>Schwierigkeit: {{ p.difficulty }}</li>
+    <li>Standort: {{ p.location }}</li>
+    <li>Pflanzabstand: {{ p.spacing_cm }} cm</li>
+    <li>Wuchshöhe: {{ p.height_cm }} cm</li>
+  </ul>
+
+  <h3>Vom Samen bis zur Ernte</h3>
+  <ol class="stages">
+    @for (stage of p.stages; track stage.id) {
+      <li>
+        <h4>{{ stage.title }}</h4>
+        <p class="period">{{ stage.period }}</p>
+        <p>{{ stage.instruction }}</p>
+      </li>
+    }
+  </ol>
+
+  <h3>Typische Probleme</h3>
+  @if (p.problems.length === 0) {
+    <p>Für diese Pflanze sind keine Probleme hinterlegt.</p>
+  }
+  <ul class="problems">
+    @for (problem of p.problems; track problem.id) {
+      <li><strong>{{ problem.name }}</strong> — {{ problem.countermeasure }}</li>
+    }
+  </ul>
+}

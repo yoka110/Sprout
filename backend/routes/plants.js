@@ -32,9 +32,19 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const { name, family, difficulty, location, spacing_cm, height_cm, owner_id } = req.body;
+    const {
+        name,
+        family,
+        difficulty,
+        location,
+        spacing_cm,
+        height_cm,
+        owner_id,
+        stages = [],
+        problems = []
+    } = req.body;
 
-    if(!name || !family || !difficulty || !location || !owner_id) {
+    if(!name || !family || !difficulty || !location || owner_id === undefined || owner_id === null) {
         return res.status(400).json({ error: 'Pflichtfeld fehlt' });
     }
 
@@ -46,20 +56,64 @@ router.post('/', (req, res) => {
         return res.status(400).json({ error: 'Wuchshöhe muss eine positive Zahl sein' });
     }
 
-    try{
-        const result = db
-        .prepare('INSERT INTO plants (name, family, difficulty, location, spacing_cm, height_cm, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .run(name, family, difficulty, location, spacing_cm, height_cm, owner_id);
+    const normalizedStages = Array.isArray(stages) ? stages : [];
+    const normalizedProblems = Array.isArray(problems) ? problems : [];
+
+    const hasInvalidStage = normalizedStages.some(stage => !stage || !stage.title || !stage.period || !stage.instruction);
+    if (hasInvalidStage) {
+        return res.status(400).json({ error: 'Eine Wachstumsphase ist unvollständig' });
+    }
+
+    const hasInvalidProblem = normalizedProblems.some(problem => !problem || !problem.name || !problem.countermeasure);
+    if (hasInvalidProblem) {
+        return res.status(400).json({ error: 'Ein Problem ist unvollständig' });
+    }
+
+    const plantExists = db.prepare('SELECT id FROM plants WHERE LOWER(name) = LOWER(?) AND (owner_id IS NULL OR owner_id = ?)').get(name, owner_id)
+
+    if(plantExists) {
+        return res.status(409).json({ error: 'Eine Pflanze mit diesem Namen existiert bereits'});
+    }
+
+    try {
+        const insertPlant = db.prepare(
+            'INSERT INTO plants (name, family, difficulty, location, spacing_cm, height_cm, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        );
+        const insertStage = db.prepare(
+            'INSERT INTO growth_stages (plant_id, position, title, period, instruction) VALUES (?, ?, ?, ?, ?)'
+        );
+        const insertProblem = db.prepare(
+            'INSERT INTO plant_problems (plant_id, name, countermeasure) VALUES (?, ?, ?)'
+        );
+
+        const transaction = db.transaction(() => {
+            const result = insertPlant.run(name, family, difficulty, location, spacing_cm, height_cm, owner_id);
+            const plantId = Number(result.lastInsertRowid);
+
+            normalizedStages.forEach((stage, index) => {
+                insertStage.run(plantId, index + 1, stage.title, stage.period, stage.instruction);
+            });
+
+            normalizedProblems.forEach((problem) => {
+                insertProblem.run(plantId, problem.name, problem.countermeasure);
+            });
+
+            return plantId;
+        });
+
+        const plantId = transaction();
 
         res.status(201).json({
-            id: result.lastInsertRowid,
-            name: name,
-            family: family,
-            difficulty: difficulty,
-            location: location,
-            spacing_cm: spacing_cm,
-            height_cm: height_cm,
-            owner_id: owner_id
+            id: plantId,
+            name,
+            family,
+            difficulty,
+            location,
+            spacing_cm,
+            height_cm,
+            owner_id,
+            stages: normalizedStages,
+            problems: normalizedProblems
         });
     } catch(error) {
         console.error(error);

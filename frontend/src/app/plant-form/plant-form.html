@@ -1,1 +1,145 @@
 <h2>Neue Pflanze anlegen</h2>
+
+<form [formGroup]="plantForm" (ngSubmit)="save()">
+    <p>
+        <label for="name">Name</label>
+        <input id="name" type="text" formControlName="name"/>
+        @if (plantForm.controls.name.touched && plantForm.controls.name.hasError('required')) {
+            <span class="error">Bitte einen Namen angeben.</span>
+        }
+    </p>
+
+    <p>
+        <label for="family">Pflanzenfamilie</label>
+        <input id="family" type="text" formControlName="family" />
+        @if (plantForm.controls.family.touched && plantForm.controls.family.hasError('required')) {
+        <span class="error">Bitte eine Familie angeben.</span>
+        }
+    </p>
+
+    <p>
+        <label for="difficulty">Schwierigkeit</label>
+        <select id="difficulty" formControlName="difficulty">
+        <option value="Einfach">Einfach</option>
+        <option value="Mittel">Mittel</option>
+        <option value="Schwer">Schwer</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="location">Standort</label>
+        <select id="location" formControlName="location">
+            <option value="Sonne">Sonne</option>
+            <option value="Halbschatten">Halbschatten</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="spacing">Pflanzabstand in cm</label>
+        <input id="spacing" type="number" formControlName="spacing_cm" />
+        @if (plantForm.controls.spacing_cm.touched && plantForm.controls.spacing_cm.hasError('required')) {
+          <span class="error">Bitte einen Pflanzabstand angeben.</span>
+        }
+        @if (plantForm.controls.spacing_cm.touched && plantForm.controls.spacing_cm.hasError('min')) {
+            <span class="error">Der Abstand muss größer als 0 sein.</span>
+        }
+    </p>
+
+    <p>
+        <label for="height">Wuchshöhe in cm</label>
+        <input id="height" type="number" formControlName="height_cm" />
+        @if (plantForm.controls.height_cm.touched && plantForm.controls.height_cm.hasError('required')) {
+          <span class="error">Bitte eine Wuchshöhe angeben.</span>
+        }
+        @if (plantForm.controls.height_cm.touched && plantForm.controls.height_cm.hasError('min')) {
+        <span class="error">Die Höhe muss größer als 0 sein.</span>
+        }
+    </p>
+
+  <h3>Vom Samen bis zur Ernte</h3>
+
+  <div formArrayName="stages">
+    @for (stageGroup of stages.controls; track $index) {
+      <fieldset class="block" [formGroupName]="$index">
+        <legend>Phase {{ $index + 1 }}</legend>
+
+        <p>
+            <label>Titel</label>
+            <input type="text" formControlName="title" placeholder="z. B. Aussaat" />
+            @if (stageGroup.controls.title.touched && stageGroup.controls.title.hasError('required')) {
+                <span class="error">Bitte einen Titel angeben.</span>
+            }
+        </p>
+
+        <p>
+            <label>Zeitraum</label>
+            <input type="text" formControlName="period" placeholder="z. B. März bis April" />
+            @if (stageGroup.controls.period.touched && stageGroup.controls.period.hasError('required')) {
+                <span class="error">Bitte einen Zeitraum angeben.</span>
+            }
+        </p>
+
+        <p>
+            <label>Anleitung</label>
+            <textarea rows="2" formControlName="instruction"></textarea>
+            @if (stageGroup.controls.instruction.touched && stageGroup.controls.instruction.hasError('required')) {
+                <span class="error">Bitte eine Anleitung angeben.</span>
+            }
+        </p>
+
+        <button type="button" class="secondary" [disabled]="stages.length === 1" (click)="removeStage($index)">
+          Phase entfernen
+        </button>
+      </fieldset>
+    }
+  </div>
+
+  <button type="button" class="secondary" [disabled]="stages.length >= maxStages" (click)="addStage()">
+    Phase hinzufügen
+  </button>
+
+  <h3>Typische Probleme</h3>
+
+  <div formArrayName="problems">
+    @for (problemGroup of problems.controls; track $index) {
+      <fieldset class="block" [formGroupName]="$index">
+        <legend>Problem {{ $index + 1 }}</legend>
+
+        <p>
+          <label>Name</label>
+          <input type="text" formControlName="name" placeholder="z. B. Blattläuse" />
+          @if (problemGroup.controls.name.touched && problemGroup.controls.name.hasError('required')) {
+            <span class="error">Bitte einen Namen angeben.</span>
+          }
+        </p>
+
+        <p>
+          <label>Gegenmaßnahme</label>
+          <textarea rows="2" formControlName="countermeasure"></textarea>
+          @if (problemGroup.controls.countermeasure.touched && problemGroup.controls.countermeasure.hasError('required')) {
+            <span class="error">Bitte eine Gegenmaßnahme angeben.</span>
+          }
+        </p>
+
+        <button type="button" class="secondary" (click)="removeProblem($index)">
+          Problem entfernen
+        </button>
+      </fieldset>
+    }
+  </div>
+
+  @if (problems.length === 0) {
+    <p class="hint">Für diese Pflanze sind keine Probleme hinterlegt.</p>
+  }
+
+  <button type="button" class="secondary" [disabled]="problems.length >= maxProblems" (click)="addProblem()">
+    Problem hinzufügen
+  </button>
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+  <p class="actions">
+    <button type="submit" [disabled]="plantForm.invalid || isSaving">Speichern</button>
+    <a routerLink="/plants">Abbrechen</a>
+  </p>
+</form>
