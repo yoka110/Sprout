@@ -18,7 +18,8 @@ export class PlantForm {
 
   errorMessage = '';
   isSaving = false;
-  readonly maxStages = 10;
+  // F-31 caps a plant at five growth stages
+  readonly maxStages = 5;
   readonly maxProblems = 10;
 
   plantForm = new FormGroup({
