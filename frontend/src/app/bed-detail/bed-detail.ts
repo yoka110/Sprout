@@ -2,6 +2,8 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BedService, BedWithPlants, CompanionWarning } from '../bed.service';
+import { PlantService, Plant } from '../plant.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-bed-detail',
@@ -12,6 +14,8 @@ import { BedService, BedWithPlants, CompanionWarning } from '../bed.service';
 export class BedDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private bedService = inject(BedService);
+  private plantService = inject(PlantService);
+  private authService = inject(AuthService);
   private changeDetector = inject(ChangeDetectorRef);
 
   bed: BedWithPlants | null = null;
@@ -22,13 +26,9 @@ export class BedDetail implements OnInit {
   // text shown when assigning a plant goes wrong, empty means no error
   errorMessage = '';
 
-  availablePlants = [
-    { id: 1, name: 'Tomate' },
-    { id: 2, name: 'Moehre' },
-    { id: 3, name: 'Zwiebel' },
-    { id: 4, name: 'Salat' },
-    { id: 5, name: 'Buschbohne' },
-  ];
+  // plants available for the "Pflanze zuordnen" dropdown, filled from
+  // plant.service (AP-B) - public guides plus this user's own plants
+  availablePlants: Plant[] = [];
 
   assignPlantForm = new FormGroup({
     plant_id: new FormControl('', Validators.required),
@@ -39,17 +39,16 @@ export class BedDetail implements OnInit {
     const idText = this.route.snapshot.paramMap.get('id');
     this.bedId = Number(idText);
     this.loadBed();
+    this.loadPlants();
   }
 
   private loadBed() {
     this.bedService.getBed(this.bedId).subscribe({
-      // the request succeeded
       next: (bed) => {
         this.bed = bed;
         this.loadError = '';
         this.changeDetector.detectChanges();
       },
-      // the server refused it (e.g. 404), or is not reachable at all
       error: (response) => {
         if (response.error && response.error.error) {
           this.loadError = response.error.error;
@@ -58,6 +57,17 @@ export class BedDetail implements OnInit {
         }
         this.changeDetector.detectChanges();
       },
+    });
+  }
+
+  // loads the plants shown in the "Pflanze zuordnen" dropdown
+  private loadPlants() {
+    const user = this.authService.getCurrentUser();
+    const userId = user ? user.id : undefined;
+
+    this.plantService.getPlants(userId).subscribe((plants) => {
+      this.availablePlants = plants;
+      this.changeDetector.detectChanges();
     });
   }
 
