@@ -1,0 +1,10 @@
+@if (isLoading) {
+  <p>Lade Profil...</p>
+} @else if (errorMessage) {
+  <p class="error">{{ errorMessage }}</p>
+} @else {
+  <h2>Profil</h2>
+  <p>Angemeldet als <strong>{{ username }}</strong></p>
+  <p>Eigene Pflanzen: {{ ownPlantCount }}</p>
+  <p>Eigene Beete: {{ ownBedCount }}</p>
+}
