@@ -27,7 +27,7 @@ export class PlantList implements OnInit {
         this.changeDetector.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Die Pflanzen konnten nicht gelanden werden.'
+        this.errorMessage = 'Die Pflanzen konnten nicht geladen werden.'
         this.isLoading = false;
         this.changeDetector.detectChanges();
       }

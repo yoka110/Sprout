@@ -69,7 +69,7 @@ router.post('/', (req, res) => {
         return res.status(400).json({ error: 'Ein Problem ist unvollständig' });
     }
 
-    const plantExists = db.prepare('SELECT id FROM plants WHERE LOWER(name) = LOWER(?)').get(name)
+    const plantExists = db.prepare('SELECT id FROM plants WHERE LOWER(name) = LOWER(?) AND (owner_id IS NULL OR owner_id = ?)').get(name, owner_id)
 
     if(plantExists) {
         return res.status(409).json({ error: 'Eine Pflanze mit diesem Namen existiert bereits'});

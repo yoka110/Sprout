@@ -9,8 +9,16 @@ textarea {
   font-family: inherit;
 }
 
+/* centers the form block itself, the text inside stays left aligned */
 form {
   max-width: 420px;
+  margin: 0 auto;
+}
+
+/* same width and centering, so the heading lines up with the form */
+h2 {
+  max-width: 420px;
+  margin: 0 auto 16px auto;
 }
 
 label {

@@ -37,6 +37,9 @@
     <p>
         <label for="spacing">Pflanzabstand in cm</label>
         <input id="spacing" type="number" formControlName="spacing_cm" />
+        @if (plantForm.controls.spacing_cm.touched && plantForm.controls.spacing_cm.hasError('required')) {
+          <span class="error">Bitte einen Pflanzabstand angeben.</span>
+        }
         @if (plantForm.controls.spacing_cm.touched && plantForm.controls.spacing_cm.hasError('min')) {
             <span class="error">Der Abstand muss größer als 0 sein.</span>
         }
@@ -45,6 +48,9 @@
     <p>
         <label for="height">Wuchshöhe in cm</label>
         <input id="height" type="number" formControlName="height_cm" />
+        @if (plantForm.controls.height_cm.touched && plantForm.controls.height_cm.hasError('required')) {
+          <span class="error">Bitte eine Wuchshöhe angeben.</span>
+        }
         @if (plantForm.controls.height_cm.touched && plantForm.controls.height_cm.hasError('min')) {
         <span class="error">Die Höhe muss größer als 0 sein.</span>
         }
