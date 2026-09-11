@@ -110,10 +110,16 @@ export class BedDetail implements OnInit {
   }
 
   get badWarnings(): CompanionWarning[] {
-    return this.bed?.warnings.filter((w) => w.type === 'bad') ?? [];
+    if (!this.bed) {
+      return [];
+    }
+    return this.bed.warnings.filter((w) => w.type === 'bad');
   }
 
   get goodWarnings(): CompanionWarning[] {
-    return this.bed?.warnings.filter((w) => w.type === 'good') ?? [];
+    if (!this.bed) {
+      return [];
+    }
+    return this.bed.warnings.filter((w) => w.type === 'good');
   }
 }
