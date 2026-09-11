@@ -19,13 +19,15 @@ export class BedList implements OnInit {
 
   // two separate messages so a failed create does not hide the loaded list
   loadError = '';
+  deleteError = '';
   errorMessage = '';
 
   createBedForm = new FormGroup({
     name: new FormControl('', Validators.required),
-    rows: new FormControl('', [Validators.required, Validators.min(1), Validators.max(6)]),
+    rows: new FormControl('1', { nonNullable: true, validators: Validators.required }),
     row_length_cm: new FormControl('', [Validators.required, Validators.min(1)]),
-    location: new FormControl('', Validators.required),
+    location: new FormControl('Sonne', { nonNullable: true, validators: Validators.required }),
+    notes: new FormControl('', { nonNullable: true }),
   });
 
   ngOnInit() {
@@ -53,7 +55,7 @@ export class BedList implements OnInit {
 
   onSubmit() {
     if (this.createBedForm.invalid) {
-      this.errorMessage = 'Bitte alle Felder korrekt ausfüllen (Reihen: 1 bis 6)';
+      this.errorMessage = 'Bitte alle Felder korrekt ausfüllen';
       return;
     }
 
@@ -68,6 +70,7 @@ export class BedList implements OnInit {
       rows: Number(this.createBedForm.value.rows),
       row_length_cm: Number(this.createBedForm.value.row_length_cm),
       location: this.createBedForm.value.location!,
+      notes: this.createBedForm.value.notes!,
     };
 
     this.bedService.createBed(newBed).subscribe({
@@ -82,6 +85,24 @@ export class BedList implements OnInit {
           this.errorMessage = response.error.error;
         } else {
           this.errorMessage = 'Server nicht erreichbar';
+        }
+        this.changeDetector.detectChanges();
+      },
+    });
+  }
+
+  onDeleteBed(bed: Bed) {
+    this.bedService.deleteBed(bed.id).subscribe({
+      next: () => {
+        this.beds = this.beds.filter((b) => b.id !== bed.id);
+        this.deleteError = '';
+        this.changeDetector.detectChanges();
+      },
+      error: (response) => {
+        if (response.error && response.error.error) {
+          this.deleteError = response.error.error;
+        } else {
+          this.deleteError = 'Server nicht erreichbar';
         }
         this.changeDetector.detectChanges();
       },

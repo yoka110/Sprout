@@ -56,6 +56,7 @@ db.exec(`
     rows          INTEGER NOT NULL,
     row_length_cm INTEGER NOT NULL,
     location      TEXT NOT NULL,
+    notes         TEXT NOT NULL DEFAULT '',
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
 
