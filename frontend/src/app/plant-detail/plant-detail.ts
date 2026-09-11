@@ -14,6 +14,7 @@ export class PlantDetail implements OnInit {
   private changeDetector = inject(ChangeDetectorRef);
 
   plant: PlantWithDetail | null = null;
+  imageMissing = false;
   errorMessage = '';
   isLoading = true;
 
@@ -33,5 +34,14 @@ export class PlantDetail implements OnInit {
         this.changeDetector.detectChanges();
       }
     })
+  }
+
+  imageUrl(name: string): string {
+    return '/plant-images/' + name + '.jpg';
+  }
+
+  onImageMissing() {
+    this.imageMissing = true;
+    this.changeDetector.detectChanges();
   }
 }

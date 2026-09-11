@@ -9,16 +9,31 @@
 }
 
 @if (plant; as p) {
-  <h2>{{ p.name }}</h2>
-  <p class="family">{{ p.family }}</p>
+  <div class="intro">
+    <div class="intro-text">
+      <h2>{{ p.name }}</h2>
+      <p class="family">{{ p.family }}</p>
 
-  <h3>Steckbrief</h3>
-  <ul class="facts">
-    <li>Schwierigkeit: {{ p.difficulty }}</li>
-    <li>Standort: {{ p.location }}</li>
-    <li>Pflanzabstand: {{ p.spacing_cm }} cm</li>
-    <li>Wuchshöhe: {{ p.height_cm }} cm</li>
-  </ul>
+      <h3>Steckbrief</h3>
+      <ul class="facts">
+        <li>Schwierigkeit: {{ p.difficulty }}</li>
+        <li>Standort: {{ p.location }}</li>
+        <li>Pflanzabstand: {{ p.spacing_cm }} cm</li>
+        <li>Wuchshöhe: {{ p.height_cm }} cm</li>
+      </ul>
+    </div>
+
+    @if (p.owner_id === null) {
+      <figure class="photo">
+        @if (imageMissing) {
+          <p class="missing">Bild fehlt</p>
+        } @else {
+          <img [src]="imageUrl(p.name)" [alt]="p.name" (error)="onImageMissing()">
+        }
+        <figcaption>{{ p.name }}</figcaption>
+      </figure>
+    }
+  </div>
 
   <h3>Vom Samen bis zur Ernte</h3>
   <ol class="stages">
