@@ -94,7 +94,12 @@ router.get('/:id', (req, res) => {
         ORDER BY bed_plants.row_index
     `).all(bedId);
 
-    const uniquePlantIds = [...new Set(plants.map(p => p.plant_id))];
+    const uniquePlantIds = [];
+    for (const plant of plants) {
+        if (!uniquePlantIds.includes(plant.plant_id)) {
+            uniquePlantIds.push(plant.plant_id);
+        }
+    }
 
     const warnings = [];
 
