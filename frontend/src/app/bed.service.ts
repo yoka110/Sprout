@@ -1,9 +1,6 @@
-// tools for creating a service and asking Angular for other services
 import { Injectable, inject } from '@angular/core';
-// service that sends HTTP requests to the backend
 import { HttpClient } from '@angular/common/http';
 
-// shape of one bed as it comes back from GET /api/beds
 export interface Bed {
   id: number;
   user_id: number;
@@ -13,7 +10,6 @@ export interface Bed {
   location: string;
 }
 
-// data needed to create a new bed, sent to POST /api/beds
 export interface NewBed {
   user_id: number;
   name: string;
@@ -22,7 +18,6 @@ export interface NewBed {
   location: string;
 }
 
-// one plant placed in a bed, part of the detail view
 export interface BedPlant {
   bed_plant_id: number;
   row_index: number;
@@ -32,13 +27,11 @@ export interface BedPlant {
   height_cm: number;
 }
 
-// data needed to assign a plant to a row, sent to POST /api/beds/:id/plants
 export interface NewBedPlant {
   plant_id: number;
   row_index: number;
 }
 
-// one companion-planting warning, part of the detail view
 export interface CompanionWarning {
   plant_a: string;
   plant_b: string;
@@ -46,8 +39,7 @@ export interface CompanionWarning {
   reason: string;
 }
 
-// a single bed together with its full occupancy and warnings
-// (no user_id here: GET /api/beds/:id does not return it)
+// no user_id here on purpose: GET /api/beds/:id does not return it
 export interface BedWithPlants {
   id: number;
   name: string;
@@ -58,37 +50,29 @@ export interface BedWithPlants {
   warnings: CompanionWarning[];
 }
 
-// providedIn root means: one instance, available in every component
 @Injectable({
   providedIn: 'root',
 })
 export class BedService {
-  // ask Angular for the HttpClient
   private http = inject(HttpClient);
-  // base address of the bed endpoints
   private apiUrl = 'http://localhost:3000/api/beds';
 
-  // get all beds belonging to one user
   getBeds(userId: number) {
     return this.http.get<Bed[]>(this.apiUrl + '?userId=' + userId);
   }
 
-  // get one bed with its plants and companion warnings
   getBed(id: number) {
     return this.http.get<BedWithPlants>(this.apiUrl + '/' + id);
   }
 
-  // create a new bed
   createBed(bed: NewBed) {
     return this.http.post<Bed>(this.apiUrl, bed);
   }
 
-  // assign a plant to a row in a bed
   assignPlant(bedId: number, plant: NewBedPlant) {
     return this.http.post<{ bed_plant_id: number }>(this.apiUrl + '/' + bedId + '/plants', plant);
   }
 
-  // remove a plant from a bed
   removePlant(bedId: number, bedPlantId: number) {
     return this.http.delete<void>(this.apiUrl + '/' + bedId + '/plants/' + bedPlantId);
   }

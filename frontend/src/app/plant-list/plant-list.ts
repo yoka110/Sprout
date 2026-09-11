@@ -20,17 +20,18 @@ export class PlantList implements OnInit {
 
   ngOnInit(): void {
     const currentUser = this.authService.getCurrentUser();
-    this.plantService.getPlants(currentUser?.id).subscribe({
+    this.plantService.getPlants(currentUser ? currentUser.id : undefined).subscribe({
       next: (plants) => {
         this.plants = plants;
         this.isLoading = false;
+        // F-29: no zone.js, so tell Angular to redraw after the async assignment
         this.changeDetector.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Die Pflanzen konnten nicht geladen werden.'
+        this.errorMessage = 'Die Pflanzen konnten nicht geladen werden.';
         this.isLoading = false;
         this.changeDetector.detectChanges();
-      }
+      },
     });
   }
 }

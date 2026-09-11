@@ -1,9 +1,10 @@
-<!-- header is shown on every page -->
 <header>
   <h1>Sprout</h1>
   <nav>
+    <!-- exact so Start is only active on the empty path, not on every route -->
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Start</a>
     <a routerLink="/plants" routerLinkActive="active">Pflanzen</a>
+    <!-- Beete stays visible when logged out; the guard sends the click to /login -->
     <a routerLink="/beds" routerLinkActive="active">Beete</a>
 
     @if (username()) {
@@ -16,7 +17,6 @@
   </nav>
 </header>
 
-<!-- the component of the current route is shown here -->
 <main>
   <router-outlet />
 </main>
