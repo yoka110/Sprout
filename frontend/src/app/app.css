@@ -22,6 +22,17 @@ nav a.active {
   font-weight: bold;
 }
 
+/* username text next to the nav links - bold so it stands out from the plain links, extra gap before the logout button */
+nav span {
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+/* logout button sits directly after the username text - needs its own gap, not added to .btn-secondary globally since that class is also used in plant-form and bed-detail where this gap isn't wanted */
+nav .btn-secondary {
+  margin-left: 4px;
+}
+
 /* content area below the header */
 main {
   padding: 16px;
