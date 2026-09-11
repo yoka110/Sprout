@@ -4,10 +4,15 @@
   <p class="error">{{ loadError }}</p>
 }
 
+@if (deleteError) {
+  <p class="error">{{ deleteError }}</p>
+}
+
 @for (bed of beds; track bed.id) {
   <p>
     <a [routerLink]="['/beds', bed.id]">{{ bed.name }}</a>
     — {{ bed.rows }} Reihen, {{ bed.location }}
+    <button type="button" class="btn-secondary" (click)="onDeleteBed(bed)">Löschen</button>
   </p>
 } @empty {
   <p>Noch keine Beete angelegt.</p>
@@ -19,14 +24,28 @@
   <label for="name">Name</label>
   <input id="name" type="text" formControlName="name">
 
-  <label for="rows">Reihen (1–6)</label>
-  <input id="rows" type="number" formControlName="rows">
+  <label for="rows">Reihen</label>
+  <select id="rows" formControlName="rows">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+  </select>
 
   <label for="row_length_cm">Reihenlänge (cm)</label>
-  <input id="row_length_cm" type="number" formControlName="row_length_cm">
+  <input id="row_length_cm" type="number" formControlName="row_length_cm" min="1" step="1">
 
   <label for="location">Standort</label>
-  <input id="location" type="text" formControlName="location">
+  <select id="location" formControlName="location">
+    <option value="Sonne">Sonne</option>
+    <option value="Halbschatten">Halbschatten</option>
+    <option value="Schatten">Schatten</option>
+  </select>
+
+  <label for="notes">Notizen</label>
+  <textarea id="notes" rows="3" formControlName="notes"></textarea>
 
   @if (errorMessage) {
     <p class="error">{{ errorMessage }}</p>

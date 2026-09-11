@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const { user_id, name, rows, row_length_cm, location } = req.body;
+    const { user_id, name, rows, row_length_cm, location, notes } = req.body;
 
     // rows checked against undefined, not truthiness, so a valid rows: 0 reaches the range check below
     if (!user_id || !name || rows === undefined || !row_length_cm || !location) {
@@ -30,8 +30,8 @@ router.post('/', (req, res) => {
     let result;
     try {
         result = db.prepare(
-            'INSERT INTO beds (user_id, name, rows, row_length_cm, location) VALUES (?, ?, ?, ?, ?)'
-        ).run(user_id, name, rows, row_length_cm, location);
+            'INSERT INTO beds (user_id, name, rows, row_length_cm, location, notes) VALUES (?, ?, ?, ?, ?, ?)'
+        ).run(user_id, name, rows, row_length_cm, location, notes || '');
     } catch (err) {
         return res.status(400).json({ error: 'Ungültiger Nutzer' });
     }
@@ -137,9 +137,24 @@ router.get('/:id', (req, res) => {
         rows: bed.rows,
         row_length_cm: bed.row_length_cm,
         location: bed.location,
+        notes: bed.notes,
         plants,
         warnings
     });
+});
+
+router.put('/:id/notes', (req, res) => {
+    const bedId = Number(req.params.id);
+    const { notes } = req.body;
+
+    const bed = db.prepare('SELECT * FROM beds WHERE id = ?').get(bedId);
+    if (!bed) {
+        return res.status(404).json({ error: 'Beet existiert nicht' });
+    }
+
+    db.prepare('UPDATE beds SET notes = ? WHERE id = ?').run(notes || '', bedId);
+
+    res.json({ notes: notes || '' });
 });
 
 router.delete('/:id/plants/:bedPlantId', (req, res) => {

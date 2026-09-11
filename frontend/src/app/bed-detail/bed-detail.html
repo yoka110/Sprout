@@ -24,14 +24,31 @@
       }
     </select>
 
-    <label for="row_index">Reihe (1–{{ bed.rows }})</label>
-    <input id="row_index" type="number" formControlName="row_index">
+    <label for="row_index">Reihe</label>
+    <select id="row_index" formControlName="row_index">
+      <option value="">-- wählen --</option>
+      @for (row of rowNumbers; track row) {
+        <option [value]="row">{{ row }}</option>
+      }
+    </select>
 
     @if (errorMessage) {
       <p class="error">{{ errorMessage }}</p>
     }
 
     <button type="submit" class="btn">Zuordnen</button>
+  </form>
+
+  <h3>Notizen</h3>
+  <form [formGroup]="notesForm" (ngSubmit)="onSaveNotes()">
+    <label for="notes">Was du dir zu diesem Beet notiert hast</label>
+    <textarea id="notes" rows="4" formControlName="notes"></textarea>
+
+    @if (notesMessage) {
+      <p>{{ notesMessage }}</p>
+    }
+
+    <button type="submit" class="btn">Notizen speichern</button>
   </form>
 
   <h3>Passt nicht zusammen</h3>

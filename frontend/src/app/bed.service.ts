@@ -8,6 +8,7 @@ export interface Bed {
   rows: number;
   row_length_cm: number;
   location: string;
+  notes: string;
 }
 
 export interface NewBed {
@@ -16,6 +17,7 @@ export interface NewBed {
   rows: number;
   row_length_cm: number;
   location: string;
+  notes: string;
 }
 
 export interface BedPlant {
@@ -46,6 +48,7 @@ export interface BedWithPlants {
   rows: number;
   row_length_cm: number;
   location: string;
+  notes: string;
   plants: BedPlant[];
   warnings: CompanionWarning[];
 }
@@ -67,6 +70,14 @@ export class BedService {
 
   createBed(bed: NewBed) {
     return this.http.post<Bed>(this.apiUrl, bed);
+  }
+
+  deleteBed(id: number) {
+    return this.http.delete<void>(this.apiUrl + '/' + id);
+  }
+
+  updateNotes(id: number, notes: string) {
+    return this.http.put<{ notes: string }>(this.apiUrl + '/' + id + '/notes', { notes });
   }
 
   assignPlant(bedId: number, plant: NewBedPlant) {

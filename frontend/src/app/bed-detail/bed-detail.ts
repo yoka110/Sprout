@@ -26,9 +26,15 @@ export class BedDetail implements OnInit {
 
   availablePlants: Plant[] = [];
 
+  notesForm = new FormGroup({
+    notes: new FormControl('', { nonNullable: true }),
+  });
+
+  notesMessage = '';
+
   assignPlantForm = new FormGroup({
     plant_id: new FormControl('', Validators.required),
-    row_index: new FormControl('', [Validators.required, Validators.min(1)]),
+    row_index: new FormControl('', Validators.required),
   });
 
   ngOnInit() {
@@ -42,6 +48,7 @@ export class BedDetail implements OnInit {
     this.bedService.getBed(this.bedId).subscribe({
       next: (bed) => {
         this.bed = bed;
+        this.notesForm.setValue({ notes: bed.notes });
         this.loadError = '';
         // F-29: no zone.js, so tell Angular to redraw after the async assignment
         this.changeDetector.detectChanges();
@@ -95,6 +102,19 @@ export class BedDetail implements OnInit {
     });
   }
 
+  onSaveNotes() {
+    this.bedService.updateNotes(this.bedId, this.notesForm.value.notes!).subscribe({
+      next: () => {
+        this.notesMessage = 'Notizen gespeichert';
+        this.changeDetector.detectChanges();
+      },
+      error: () => {
+        this.notesMessage = 'Notizen konnten nicht gespeichert werden';
+        this.changeDetector.detectChanges();
+      },
+    });
+  }
+
   onRemovePlant(bedPlantId: number) {
     this.bedService.removePlant(this.bedId, bedPlantId).subscribe({
       next: () => this.loadBed(),
@@ -103,6 +123,18 @@ export class BedDetail implements OnInit {
         this.changeDetector.detectChanges();
       },
     });
+  }
+
+  get rowNumbers(): number[] {
+    if (!this.bed) {
+      return [];
+    }
+
+    const numbers = [];
+    for (let row = 1; row <= this.bed.rows; row++) {
+      numbers.push(row);
+    }
+    return numbers;
   }
 
   plantCount(rowLengthCm: number, spacingCm: number): number {
