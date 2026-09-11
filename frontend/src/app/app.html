@@ -9,6 +9,7 @@
 
     @if (username()) {
       <span>Angemeldet als {{ username() }}</span>
+      <a routerLink="/profile" routerLinkActive="active">Profil</a>
       <button (click)="logout()" class="btn-secondary">Abmelden</button>
     } @else {
       <a routerLink="/login" routerLinkActive="active">Anmelden</a>

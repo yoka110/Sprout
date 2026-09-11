@@ -9,6 +9,7 @@ import { PlantDetail } from './plant-detail/plant-detail';
 import { PlantForm } from './plant-form/plant-form';
 import { BedList } from './bed-list/bed-list';
 import { BedDetail } from './bed-detail/bed-detail';
+import { Profile } from './profile/profile';
 import { NotFound } from './not-found/not-found';
 
 export const routes: Routes = [
@@ -24,6 +25,8 @@ export const routes: Routes = [
 
   { path: 'beds', component: BedList, canActivate: [authGuard] },
   { path: 'beds/:id', component: BedDetail, canActivate: [authGuard] },
+
+  { path: 'profile', component: Profile, canActivate: [authGuard] },
 
   { path: '**', component: NotFound },
 ];
