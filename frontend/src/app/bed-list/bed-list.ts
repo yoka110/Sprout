@@ -17,9 +17,8 @@ export class BedList implements OnInit {
 
   beds: Bed[] = [];
 
-  // text shown if loading the list itself fails (404, server down)
+  // two separate messages so a failed create does not hide the loaded list
   loadError = '';
-  // text shown when creating a bed goes wrong, empty means no error
   errorMessage = '';
 
   createBedForm = new FormGroup({
@@ -34,13 +33,12 @@ export class BedList implements OnInit {
 
     if (user) {
       this.bedService.getBeds(user.id).subscribe({
-        // the request succeeded
         next: (beds) => {
           this.beds = beds;
           this.loadError = '';
+          // F-29: no zone.js, so tell Angular to redraw after the async assignment
           this.changeDetector.detectChanges();
         },
-        // the server refused it, or is not reachable at all
         error: (response) => {
           if (response.error && response.error.error) {
             this.loadError = response.error.error;

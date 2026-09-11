@@ -1,4 +1,3 @@
-/* header bar at the top of every page */
 header {
   background-color: #6a9455;
   color: white;
@@ -9,31 +8,27 @@ header h1 {
   margin: 0 0 8px 0;
 }
 
-/* navigation links in a row */
 nav a {
   color: white;
   margin-right: 16px;
   text-decoration: none;
 }
 
-/* the link of the page we are currently on */
 nav a.active {
   text-decoration: underline;
   font-weight: bold;
 }
 
-/* username text next to the nav links - bold so it stands out from the plain links, extra gap before the logout button */
 nav span {
   font-weight: bold;
   margin-right: 12px;
 }
 
-/* logout button sits directly after the username text - needs its own gap, not added to .btn-secondary globally since that class is also used in plant-form and bed-detail where this gap isn't wanted */
+/* local gap only, not on .btn-secondary globally where plant-form and bed-detail do not want it */
 nav .btn-secondary {
   margin-left: 4px;
 }
 
-/* content area below the header */
 main {
   padding: 16px;
 }

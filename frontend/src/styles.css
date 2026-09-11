@@ -1,19 +1,14 @@
-/* Sprout - global styles, apply to every page */
-/* Angular scopes component CSS to that one component (adds a generated attribute selector) -
-   styles.css is the only file without that scoping and therefore the only place shared rules belong. */
+/* Angular scopes component CSS to its component, so shared rules only work from this unscoped file */
 
 body {
   margin: 0;
-  /* modern system fonts first, Arial as fallback - no web fonts loaded, everything here is already installed on Windows/macOS */
+  /* system fonts only, no web fonts, so nothing has to load and it matches Windows and macOS */
   font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   background-color: #F5F5F5;
   color: #222222;
-  /* default line spacing is too tight (~1.15) for body text, 1.6 gives paragraphs room to breathe */
   line-height: 1.6;
 }
 
-/* headings get a serif font, normal weight instead of the browser default bold - editorial look, agreed as the "Organic" anleihe */
-/* font-size added for a consistent scale: h1 largest (used once, in the header "Sprout"), h2 for page titles, h3 for section titles */
 h1,
 h2,
 h3 {
@@ -34,20 +29,15 @@ h3 {
   font-size: 20px;
 }
 
-/* plain links without a more specific class (e.g. bed names in bed-list, "Registrieren"/"Anmelden") -
-   browser default is a harsh blue; this keeps the underline (link must stay recognisable without relying on color alone) but uses our own green */
+/* keep the underline so a link stays recognisable without relying on color alone */
 a {
   color: #6a9455;
 }
 
-/* shared error message, used on every page (login, register, plant pages, bed pages) */
 .error {
   color: #a4342b;
 }
 
-/* primary action button, e.g. submit, "add plant/bed" */
-/* border-radius: capsule shape, inspired by the TypeUI reference */
-/* transition + box-shadow on hover: gives the button a small lift instead of a flat color swap */
 .btn {
   display: inline-block;
   padding: 8px 16px;
@@ -79,7 +69,6 @@ a {
   box-shadow: none;
 }
 
-/* secondary button, e.g. "remove stage", "cancel" */
 .btn-secondary {
   display: inline-block;
   padding: 8px 16px;
@@ -111,14 +100,12 @@ a {
   box-shadow: none;
 }
 
-/* form labels, used on every page with a form (login, register, plant-form, bed-list, bed-detail) */
 label {
   display: block;
   margin-bottom: 4px;
   font-weight: bold;
 }
 
-/* form fields, used on login, register, plant-form and both bed forms */
 input,
 select,
 textarea {

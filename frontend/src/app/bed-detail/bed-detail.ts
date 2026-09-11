@@ -21,13 +21,9 @@ export class BedDetail implements OnInit {
   bed: BedWithPlants | null = null;
   private bedId = 0;
 
-  // text shown if the bed itself fails to load (404, server down)
   loadError = '';
-  // text shown when assigning a plant goes wrong, empty means no error
   errorMessage = '';
 
-  // plants available for the "Pflanze zuordnen" dropdown, filled from
-  // plant.service (AP-B) - public guides plus this user's own plants
   availablePlants: Plant[] = [];
 
   assignPlantForm = new FormGroup({
@@ -47,6 +43,7 @@ export class BedDetail implements OnInit {
       next: (bed) => {
         this.bed = bed;
         this.loadError = '';
+        // F-29: no zone.js, so tell Angular to redraw after the async assignment
         this.changeDetector.detectChanges();
       },
       error: (response) => {
@@ -60,7 +57,6 @@ export class BedDetail implements OnInit {
     });
   }
 
-  // loads the plants shown in the "Pflanze zuordnen" dropdown
   private loadPlants() {
     const user = this.authService.getCurrentUser();
     const userId = user ? user.id : undefined;

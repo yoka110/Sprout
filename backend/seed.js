@@ -1,7 +1,5 @@
-// get the database connection from db.js
 const db = require('./db');
 
-// delete all tables first, children before parents
 db.exec(`
     DROP TABLE IF EXISTS bed_plants;
     DROP TABLE IF EXISTS companion_rules;
@@ -12,9 +10,7 @@ db.exec(`
     DROP TABLE IF EXISTS users;
 `);
 
-// create all seven tables, parents before children
 db.exec(`
-  -- user accounts, username must be unique
   CREATE TABLE users (
     id            INTEGER PRIMARY KEY,
     username      TEXT NOT NULL UNIQUE,
@@ -22,7 +18,7 @@ db.exec(`
     created_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
-  -- plants; owner_id empty means it is a guide for everyone
+  -- owner_id NULL means a guide for everyone, filled means a private plant (F-12)
   CREATE TABLE plants (
     id         INTEGER PRIMARY KEY,
     name       TEXT NOT NULL,
@@ -35,7 +31,6 @@ db.exec(`
     FOREIGN KEY (owner_id) REFERENCES users(id)
   );
 
-  -- the five stages of a plant guide, position keeps them in order
   CREATE TABLE growth_stages (
     id          INTEGER PRIMARY KEY,
     plant_id    INTEGER NOT NULL,
@@ -46,7 +41,6 @@ db.exec(`
     FOREIGN KEY (plant_id) REFERENCES plants(id)
   );
 
-  -- diseases and pests of a plant
   CREATE TABLE plant_problems (
     id             INTEGER PRIMARY KEY,
     plant_id       INTEGER NOT NULL,
@@ -55,7 +49,6 @@ db.exec(`
     FOREIGN KEY (plant_id) REFERENCES plants(id)
   );
 
-  -- garden beds, each one belongs to a user
   CREATE TABLE beds (
     id            INTEGER PRIMARY KEY,
     user_id       INTEGER NOT NULL,
@@ -66,7 +59,6 @@ db.exec(`
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
 
-  -- links beds and plants: which plant sits in which row
   CREATE TABLE bed_plants (
     id        INTEGER PRIMARY KEY,
     bed_id    INTEGER NOT NULL,
@@ -76,7 +68,6 @@ db.exec(`
     FOREIGN KEY (plant_id) REFERENCES plants(id)
   );
 
-  -- which two plants go well together, type is good or bad
   CREATE TABLE companion_rules (
     id         INTEGER PRIMARY KEY,
     plant_a_id INTEGER NOT NULL,
@@ -88,9 +79,7 @@ db.exec(`
   );
 `);
 
-// the five example plants, all of them guides (owner_id is NULL)
-// IMPORTANT: this order fixes the ids 1 to 5, companion_rules point to them.
-// Never insert a plant in between, always add new ones at the end.
+// F-24: these ids 1 to 5 are fixed and companion_rules point to them, so never insert in between, only add at the end
 db.exec(`
     INSERT INTO plants (id, name, family, difficulty, location, spacing_cm, height_cm, owner_id)
     VALUES (1, 'Tomate', 'Nachtschattengewaechse', 'Mittel', 'Sonne', 60, 180, NULL),
@@ -100,7 +89,6 @@ db.exec(`
            (5, 'Buschbohne', 'Huelsenfruechtler', 'Einfach', 'Sonne', 15, 50, NULL);
 `);
 
-// stages and problems of plant 1: Tomate
 db.exec(`
     INSERT INTO growth_stages (plant_id, position, title, period, instruction)
     VALUES (1, 1, 'Aussaat', 'Maerz bis April',
@@ -117,7 +105,6 @@ db.exec(`
            (1, 'Bluetenendfaeule', 'Gleichmaessig giessen und Kalkmangel im Boden ausgleichen.');
 `);
 
-// stages and problems of plant 2: Moehre
 db.exec(`
     INSERT INTO growth_stages (plant_id, position, title, period, instruction)
     VALUES (2, 1, 'Aussaat', 'April bis Juni',
@@ -132,7 +119,6 @@ db.exec(`
     VALUES (2, 'Moehrenfliege', 'Kulturschutznetz auflegen und Zwiebeln danebensetzen.');
 `);
 
-// stages and problems of plant 3: Zwiebel
 db.exec(`
     INSERT INTO growth_stages (plant_id, position, title, period, instruction)
     VALUES (3, 1, 'Stecken', 'Maerz bis April',
@@ -146,7 +132,6 @@ db.exec(`
     VALUES (3, 'Zwiebelfliege', 'Kulturschutznetz auflegen und den Anbauplatz jedes Jahr wechseln.');
 `);
 
-// stages and problems of plant 4: Salat
 db.exec(`
     INSERT INTO growth_stages (plant_id, position, title, period, instruction)
     VALUES (4, 1, 'Aussaat', 'Maerz bis August', 'Samen nur duenn mit Erde bedecken, sie brauchen Licht zum Keimen.'),
@@ -161,7 +146,6 @@ db.exec(`
            (4, 'Falscher Mehltau', 'Weiter auseinander pflanzen und nie ueber die Blaetter giessen.');
 `);
 
-// stages and problems of plant 5: Buschbohne
 db.exec(`
     INSERT INTO growth_stages (plant_id, position, title, period, instruction)
     VALUES (5, 1, 'Aussaat', 'Mai bis Juni', 'Samen 3 cm tief direkt ins Beet legen, der Boden muss warm sein.'),
@@ -175,9 +159,7 @@ db.exec(`
     VALUES (5, 'Schwarze Bohnenlaus', 'Befallene Triebspitzen abknipsen und Marienkaefer im Beet dulden.');
 `);
 
-// Each pair is stored only once (F-07), the query checks both directions.
-// companion_rules: all ten possible pairs of the five example plants,
-// ids are fixed by F-24: 1 Tomate, 2 Moehre, 3 Zwiebel, 4 Salat, 5 Buschbohne
+// F-07: each pair is stored only once, so the lookup checks both directions
 db.exec(`
     INSERT INTO companion_rules (plant_a_id, plant_b_id, type, reason)
     VALUES (1, 2, 'good', 'Moehren bleiben niedrig und nutzen den Boden unter den Tomatenwurzeln, beide teilen sich das Beet ohne Konkurrenz.'),

@@ -24,6 +24,7 @@ export class PlantList implements OnInit {
       next: (plants) => {
         this.plants = plants;
         this.isLoading = false;
+        // F-29: no zone.js, so tell Angular to redraw after the async assignment
         this.changeDetector.detectChanges();
       },
       error: () => {

@@ -12,13 +12,12 @@ export class App {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  // name of the logged in user, or null if nobody is logged in
   username(): string | null {
     const user = this.authService.getCurrentUser();
     return user ? user.username : null;
   }
 
-  // forget the user and leave the page, it may be a protected one
+  // send to /login after logout since the current page may be a protected one
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

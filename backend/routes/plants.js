@@ -69,6 +69,7 @@ router.post('/', (req, res) => {
         return res.status(400).json({ error: 'Ein Problem ist unvollständig' });
     }
 
+    // F-31: block a name already used by a guide or by this user's own plants, not by others' private plants
     const plantExists = db.prepare('SELECT id FROM plants WHERE LOWER(name) = LOWER(?) AND (owner_id IS NULL OR owner_id = ?)').get(name, owner_id)
 
     if(plantExists) {
@@ -86,6 +87,7 @@ router.post('/', (req, res) => {
             'INSERT INTO plant_problems (plant_id, name, countermeasure) VALUES (?, ?, ?)'
         );
 
+        // F-31: plant, stages and problems are inserted together, all or nothing
         const transaction = db.transaction(() => {
             const result = insertPlant.run(name, family, difficulty, location, spacing_cm, height_cm, owner_id);
             const plantId = Number(result.lastInsertRowid);

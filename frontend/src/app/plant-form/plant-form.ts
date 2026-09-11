@@ -149,6 +149,7 @@ export class PlantForm {
           this.errorMessage = 'Die Pflanze konnte nicht gespeichert werden.';
         }
         this.isSaving = false;
+        // F-29: no zone.js, so tell Angular to redraw after the async assignment
         this.changeDetector.detectChanges();
       }
     })
