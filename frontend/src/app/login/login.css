@@ -1,4 +1,1 @@
-/* error message under the form */
-.error {
-  color: darkred;
-}
+/* error message now comes from the global .error rule in styles.css */
